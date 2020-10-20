@@ -54,6 +54,10 @@ endfunction()
 
 # Add new benchmarks inside this macro
 macro(rclcpp_benchmarks)
+  add_rclcpp_benchmark(
+    benchmark_client
+    benchmark_client.cpp
+    AMENT_DEPENDS test_msgs rcl_interfaces)
   add_rclcpp_benchmark(benchmark_init_shutdown benchmark_init_shutdown.cpp)
 
   set(SKIP_TEST "")
@@ -64,6 +68,11 @@ macro(rclcpp_benchmarks)
     benchmark_node
     benchmark_node.cpp
     TEST_OPTIONS ${SKIP_TEST})
+
+  add_rclcpp_benchmark(
+    benchmark_service
+    benchmark_service.cpp
+    AMENT_DEPENDS test_msgs rcl_interfaces)
 endmacro()
 
 call_for_each_rmw_implementation(rclcpp_benchmarks)
