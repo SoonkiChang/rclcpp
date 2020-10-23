@@ -64,6 +64,11 @@ macro(rclcpp_benchmarks)
     benchmark_node
     benchmark_node.cpp
     TEST_OPTIONS ${SKIP_TEST})
+  add_rclcpp_benchmark(benchmark_executor benchmark_executor.cpp
+    AMENT_DEPENDS
+      test_msgs
+    TEST_OPTIONS
+      ${SKIP_TEST})
 endmacro()
 
 call_for_each_rmw_implementation(rclcpp_benchmarks)
