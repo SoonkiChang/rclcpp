@@ -34,11 +34,16 @@ function(add_rclcpp_benchmark NAME SOURCE)
   set(rmw_implementation_env_var RMW_IMPLEMENTATION=${rmw_implementation})
 
   set(full_benchmark_name ${NAME}${target_suffix})
+  set(TIMEOUT "")
+  if(${rmw_implementation} MATCHES "(.*)connext(.*)")
+    set(TIMEOUT 180)
+  endif()
   add_performance_test(
-    ${full_benchmark_name}
-    ${SOURCE}
-    ${RCLCPP_BENCHMARK_TEST_OPTIONS}
-    ENV ${rmw_implementation_env_var})
+    "${full_benchmark_name}"
+    "${SOURCE}"
+    "${RCLCPP_BENCHMARK_TEST_OPTIONS}"
+    ENV ${rmw_implementation_env_var}
+    TIMEOUT ${TIMEOUT})
   if(TARGET ${full_benchmark_name})
     if(RCLCPP_BENCHMARK_AMENT_DEPENDS)
       ament_target_dependencies(
@@ -54,16 +59,13 @@ endfunction()
 
 # Add new benchmarks inside this macro
 macro(rclcpp_benchmarks)
+
   add_rclcpp_benchmark(
     benchmark_client
     benchmark_client.cpp
     AMENT_DEPENDS test_msgs rcl_interfaces)
   add_rclcpp_benchmark(benchmark_init_shutdown benchmark_init_shutdown.cpp)
 
-  set(SKIP_TEST "")
-  if(${rmw_implementation} MATCHES "(.*)connext(.*)")
-    set(SKIP_TEST "SKIP_TEST")
-  endif()
   add_rclcpp_benchmark(
     benchmark_node
     benchmark_node.cpp
